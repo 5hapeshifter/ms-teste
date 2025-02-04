@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  host: localhost
+  servlet:
+    context-path: /ms-um
+
+spring:
+  application:
+    name: ms-um
+
+ms-dois:
+  url: http://localhost:8081/ms-dois
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuitBreakerConfig:
+        registerHealthIndicator: true
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 15
+        failureRateThreshold: 25
+        slowCallRateThreshold: 25
+        slowCallDurationThreshold: 1s
+        permittedNumberOfCallsInHalfOpenState: 5
+        waitDurationInOpenState: 30s
+#        recordExceptions:
+#          - java.io.IOException
+#          - java.util.concurrent.TimeoutException
+#          - java.net.ConnectException
+#          - org.springframework.web.client.ResourceAccessException

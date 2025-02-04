@@ -1,0 +1,9 @@
+server:
+  port: 8081
+  host: localhost
+  servlet:
+    context-path: /ms-dois
+spring:
+  application:
+    name: ms-dois
+
