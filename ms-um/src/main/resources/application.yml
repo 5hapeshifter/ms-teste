@@ -16,8 +16,9 @@ resilience4j:
     instances:
       circuitBreakerConfig:
         registerHealthIndicator: true
-        slidingWindowSize: 15
-        minimumNumberOfCalls: 15
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
         failureRateThreshold: 25
         slowCallRateThreshold: 25
         slowCallDurationThreshold: 1s

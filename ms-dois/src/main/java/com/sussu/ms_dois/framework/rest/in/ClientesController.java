@@ -25,7 +25,7 @@ public class ClientesController {
 
     @GetMapping
     public ResponseEntity<List<ClienteDto>> listarClientes() throws InterruptedException {
-//        Thread.sleep(2000);
+        Thread.sleep(2000);
         var result = clientesServiceImpl.listarClientes();
         logger.info("ClientesController logs: " + result);
         return ResponseEntity.ok(result);

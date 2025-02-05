@@ -43,39 +43,20 @@ public class MsDoisClientImpl implements MsClient {
     }
 
     @Override
+    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "circuitBreakerConfig", fallbackMethod = "fallbackBuscarClientes")
     public ResponseEntity<List<ClienteDto>> buscarClientes() {
-        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker("circuitBreakerConfig", "circuitBreakerConfig");
-        Retry retry = retryRegistry.retry("retryConfig");
         RestTemplate restTemplate = new RestTemplate();
-
-        Supplier<ResponseEntity<List<ClienteDto>>> supplier = () -> circuitBreaker.executeSupplier(() -> restTemplate.exchange(URL + ENDPOINT, HttpMethod.GET, null, new ParameterizedTypeReference<List<ClienteDto>>() {
-        }));
-
-        Supplier<ResponseEntity<List<ClienteDto>>> decoratedSupplier = CircuitBreaker.decorateSupplier(circuitBreaker, supplier);
-
-        ResponseEntity<List<ClienteDto>> result = null;
-
-        try {
-            result =  decoratedSupplier.get();
-            logger.info("Resultado da chamada ao MS-DOIS: " + result);
-        } catch (Exception e) {
-            fallbackMethods.fallbackBuscarClientes(e);
-        }
-//        var result = restTemplate.exchange(URL + ENDPOINT, HttpMethod.GET, null, new ParameterizedTypeReference<List<ClienteDto>>() {
-//        });
-//        var result = retry.executeSupplier(() -> restTemplate.exchange(URL + ENDPOINT, HttpMethod.GET, null, new ParameterizedTypeReference<List<ClienteDto>>() {
-//        }));
-        if (circuitBreakerStateChecker.getCircuitBreakerState("circuitBreakerConfig").contains(CircuitBreaker.State.OPEN.toString())) {
-            logger.info("Circuit breaker aberto");
-        }
-
+        var result = restTemplate.exchange(URL + ENDPOINT, HttpMethod.GET, null, new ParameterizedTypeReference<List<ClienteDto>>() {});
+        logger.info("Resultado da chamada ao MS-DOIS: " + result);
         return result;
+    }
+
+    public ResponseEntity<List<ClienteDto>> fallbackBuscarClientes(Throwable t) {
+        return fallbackMethods.fallbackBuscarClientes(t);
     }
 
     @Override
     public ResponseEntity<ClienteDto> criarCliente(ClienteDto clienteDto) {
         return null;
     }
-
-
 }
