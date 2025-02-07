@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 @RestController
@@ -24,9 +25,8 @@ public class ClientesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClienteDto>> listarClientes() throws InterruptedException {
-        Thread.sleep(2000);
-        var result = clientesServiceImpl.listarClientes();
+    public ResponseEntity<List<ClienteDto>> listarClientes() {
+        var result = clientesServiceImpl.listarClientesComDelay();
         logger.info("ClientesController logs: " + result);
         return ResponseEntity.ok(result);
     }

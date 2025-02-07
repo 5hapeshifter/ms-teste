@@ -9,12 +9,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.*;
 
 @Service
 public class ClientesServiceImpl implements ClienteService {
 
+    public List<ClienteDto> listarClientesComDelay() {
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        ScheduledFuture<List<ClienteDto>> response = executorService.schedule(this::listarClientes, 2L, TimeUnit.SECONDS);
+        List<ClienteDto> result = null;
+        try{
+            result = response.get();
+        } catch (Exception e) {
+            System.out.println();
+        } finally {
+            executorService.shutdown();
+        }
+        return result;
+    }
+
     @Override
     public List<ClienteDto> listarClientes() {
+
         var endCli1 = new EnderecoDto("Rua 1", "123", "Bairro 1", "Cidade 1", "Estado 1", "CEP 1");
         var endCli12 = new EnderecoDto("Rua 2", "456", "Bairro 2", "Cidade 2", "Estado 2", "CEP 2");
         var endCli2 = new EnderecoDto("Rua 3", "789", "Bairro 3", "Cidade 3", "Estado 3", "CEP 3");

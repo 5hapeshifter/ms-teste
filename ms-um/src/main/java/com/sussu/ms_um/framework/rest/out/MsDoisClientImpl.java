@@ -5,12 +5,9 @@ import com.sussu.ms_um.application.config.circuitbreaker.CircuitBreakerStateChec
 import com.sussu.ms_um.application.config.circuitbreaker.FallbackMethods;
 import com.sussu.ms_um.application.portout.MsClient;
 import com.sussu.ms_um.framework.dtos.ClienteDto;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.RetryRegistry;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @Component
@@ -43,7 +39,7 @@ public class MsDoisClientImpl implements MsClient {
     }
 
     @Override
-    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "circuitBreakerConfig", fallbackMethod = "fallbackBuscarClientes")
+    @CircuitBreaker(name = "circuitBreakerConfig", fallbackMethod = "fallbackBuscarClientes")
     public ResponseEntity<List<ClienteDto>> buscarClientes() {
         RestTemplate restTemplate = new RestTemplate();
         var result = restTemplate.exchange(URL + ENDPOINT, HttpMethod.GET, null, new ParameterizedTypeReference<List<ClienteDto>>() {});
